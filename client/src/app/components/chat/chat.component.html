@@ -1,0 +1,61 @@
+<div class="chat-container">
+  
+  <div class="chat-header">
+    <h2>🏥 Medical Assistant Chat</h2>
+    <p>Ask health questions and get AI-powered medical insights</p>
+  </div>
+
+  <div class="messages-container" #messagesContainer>
+    <div *ngIf="messages.length === 0" class="empty-state">
+      <div class="empty-icon">💬</div>
+      <p>Start a conversation with the medical AI assistant</p>
+      <p class="empty-hint">Ask about symptoms, diseases, treatments, or health concerns</p>
+    </div>
+
+    <div *ngFor="let message of messages" class="message" [ngClass]="isUserMessage(message) ? 'user-message' : 'ai-message'">
+      <div class="message-bubble">
+        <div class="message-header" *ngIf="isAIMessage(message)">
+          <span class="ai-badge">🤖 AI Assistant</span>
+          <span class="message-time">{{ message.created_at | date: 'short' }}</span>
+        </div>
+        <div class="message-content" [innerHTML]="formatMessage(message.message_text)"></div>
+        <div *ngIf="isCritical(message)" class="critical-badge">
+          <span class="critical-icon">⚠️</span>
+          <span class="critical-text">Critical - Please consult a doctor immediately</span>
+        </div>
+        <div class="message-footer" *ngIf="isUserMessage(message)">
+          <span class="message-time">{{ message.created_at | date: 'short' }}</span>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div *ngIf="error" class="error-message">
+    <span class="error-icon">❌</span>
+    <span>{{ error }}</span>
+  </div>
+
+  <!-- AI Disclaimer -->
+  <div class="ai-disclaimer">
+    <p>⚕️ <strong>Important Disclaimer:</strong> This AI assistant provides general medical information only. It is not a substitute for professional medical advice. Always consult with a qualified healthcare provider for diagnosis and treatment.</p>
+  </div>
+
+  <div class="input-area">
+    <textarea
+      [(ngModel)]="messageText"
+      placeholder="Type your symptoms or health question..."
+      (keyup.enter)="!loading && sendMessage()"
+      [disabled]="loading"
+      class="message-input"
+    ></textarea>
+    <button
+      (click)="sendMessage()"
+      [disabled]="loading || !messageText.trim()"
+      class="send-button"
+    >
+      <span *ngIf="!loading">📤 Send</span>
+      <span *ngIf="loading">⏳ Sending...</span>
+    </button>
+  </div>
+</div>
+

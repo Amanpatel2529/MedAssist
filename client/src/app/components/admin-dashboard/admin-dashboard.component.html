@@ -1,0 +1,143 @@
+<div class="admin-dashboard">
+  <div class="dashboard-header">
+    <button class="back-btn" (click)="goBack()">← Back</button>
+    <h1>Admin Dashboard</h1>
+    <p>System Administration</p>
+  </div>
+
+  <div class="dashboard-content">
+    <div *ngIf="error" class="error-message">
+      {{ error }}
+    </div>
+
+    <div class="stats-grid">
+      <div class="stat-card">
+        <h3>Total Users</h3>
+        <p class="stat-value">{{ stats.totalUsers || 0 }}</p>
+      </div>
+      <div class="stat-card">
+        <h3>Total Doctors</h3>
+        <p class="stat-value">{{ stats.totalDoctors || 0 }}</p>
+      </div>
+      <div class="stat-card">
+        <h3>Total Chats</h3>
+        <p class="stat-value">{{ stats.totalChats || 0 }}</p>
+      </div>
+      <div class="stat-card">
+        <h3>Pending Approvals</h3>
+        <p class="stat-value">{{ pendingDoctors.length }}</p>
+      </div>
+    </div>
+
+    <div class="tabs">
+      <button
+        class="tab-btn"
+        [class.active]="activeTab === 'users'"
+        (click)="switchTab('users')"
+      >
+        👥 Users
+      </button>
+      <button
+        class="tab-btn"
+        [class.active]="activeTab === 'doctors'"
+        (click)="switchTab('doctors')"
+      >
+        🏥 Pending Doctors
+      </button>
+    </div>
+
+    <div *ngIf="loading" class="loading">
+      <p>Loading...</p>
+    </div>
+
+    <div *ngIf="!loading && activeTab === 'users'" class="tab-content">
+      <h2>User Management</h2>
+      <div class="table-container">
+        <table class="users-table">
+          <thead>
+            <tr>
+              <th>Name</th>
+              <th>Email</th>
+              <th>Role</th>
+              <th>Status</th>
+              <th>Actions</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr *ngFor="let user of users">
+              <td>{{ user.name }}</td>
+              <td>{{ user.email }}</td>
+              <td>
+                <select
+                  [(ngModel)]="user.role"
+                  (change)="updateUserRole(user.id, user.role)"
+                  class="role-select"
+                >
+                  <option value="patient">Patient</option>
+                  <option value="doctor">Doctor</option>
+                  <option value="admin">Admin</option>
+                </select>
+              </td>
+              <td>
+                <span class="status" [ngClass]="user.is_active ? 'active' : 'inactive'">
+                  {{ user.is_active ? 'Active' : 'Inactive' }}
+                </span>
+              </td>
+              <td>
+                <button
+                  class="action-btn"
+                  (click)="toggleUserActive(user.id)"
+                >
+                  {{ user.is_active ? 'Deactivate' : 'Activate' }}
+                </button>
+                <button
+                  class="action-btn delete"
+                  (click)="deleteUser(user.id)"
+                >
+                  Delete
+                </button>
+              </td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+
+    <div *ngIf="!loading && activeTab === 'doctors'" class="tab-content">
+      <h2>Pending Doctor Registrations</h2>
+      <div *ngIf="pendingDoctors.length === 0" class="empty-state">
+        <p>No pending doctor registrations</p>
+      </div>
+
+      <div *ngFor="let doctor of pendingDoctors" class="doctor-card">
+        <div class="card-header">
+          <h3>{{ doctor.name }}</h3>
+          <span class="status pending">Pending</span>
+        </div>
+
+        <div class="card-body">
+          <p><strong>Email:</strong> {{ doctor.email }}</p>
+          <p><strong>Specialization:</strong> {{ doctor.specialization }}</p>
+          <p><strong>License Number:</strong> {{ doctor.license_number }}</p>
+          <p><strong>Applied Date:</strong> {{ doctor.created_at | date: 'medium' }}</p>
+
+          <div class="actions">
+            <button
+              class="action-btn approve"
+              (click)="approveDoctorRegistration(doctor.id)"
+            >
+              ✓ Approve
+            </button>
+            <button
+              class="action-btn delete"
+              (click)="deleteUser(doctor.id)"
+            >
+              ✕ Reject
+            </button>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+

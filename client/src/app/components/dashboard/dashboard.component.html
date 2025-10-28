@@ -1,0 +1,75 @@
+<div class="dashboard-container">
+  <div class="sidebar">
+    <div class="sidebar-header">
+      <h1>Medical Chat Bot</h1>
+      <p>Welcome, {{ currentUser?.name }}</p>
+    </div>
+
+    <button class="new-chat-btn" (click)="createNewChat()">
+      + New Chat
+    </button>
+
+    <div class="chats-list">
+      <h3>Chat History</h3>
+      <div *ngIf="chats.length === 0" class="empty-chats">
+        <p>No chats yet. Start a new conversation!</p>
+      </div>
+
+      <div *ngFor="let chat of chats" class="chat-item" (click)="openChat(chat.id)">
+        <div class="chat-info">
+          <p class="chat-title">{{ chat.title }}</p>
+          <p class="chat-date">{{ chat.created_at | date: 'short' }}</p>
+        </div>
+        <button class="delete-btn" (click)="deleteChat(chat.id, $event)" title="Delete chat">
+          ✕
+        </button>
+      </div>
+    </div>
+
+    <div class="sidebar-footer">
+      <button class="nav-btn" (click)="navigateTo('/profile')">
+        👤 Profile
+      </button>
+      <button class="nav-btn" *ngIf="currentUser?.role === 'doctor'" (click)="navigateTo('/doctor-dashboard')">
+        🏥 Doctor Dashboard
+      </button>
+      <button class="nav-btn" *ngIf="currentUser?.role === 'admin'" (click)="navigateTo('/admin-dashboard')">
+        ⚙️ Admin Dashboard
+      </button>
+      <button class="logout-btn" (click)="logout()">
+        🚪 Logout
+      </button>
+    </div>
+  </div>
+
+  <div class="main-content">
+    <div *ngIf="error" class="error-message">
+      {{ error }}
+    </div>
+
+    <div *ngIf="loading" class="loading">
+      <p>Loading chats...</p>
+    </div>
+
+    <div *ngIf="!loading && chats.length === 0" class="welcome-section">
+      <h2>Welcome to Medical Chat Bot</h2>
+      <p>Start a new chat to discuss your health concerns with our AI medical assistant.</p>
+      <button class="primary-btn" (click)="createNewChat()">
+        Start New Chat
+      </button>
+    </div>
+
+    <div *ngIf="!loading && chats.length > 0" class="chats-grid">
+      <h2>Your Recent Chats</h2>
+      <div class="grid">
+        <div *ngFor="let chat of chats" class="chat-card" (click)="openChat(chat.id)">
+          <h3>{{ chat.title }}</h3>
+          <p>{{ chat.created_at | date: 'medium' }}</p>
+          <button class="delete-btn" (click)="deleteChat(chat.id, $event)">
+            Delete
+          </button>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>

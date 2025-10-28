@@ -1,0 +1,96 @@
+<div class="doctor-dashboard">
+  <div class="dashboard-header">
+    <button class="back-btn" (click)="goBack()">← Back</button>
+    <h1>Doctor Dashboard</h1>
+    <p>Welcome, Dr. {{ currentUser?.name }}</p>
+  </div>
+
+  <div class="dashboard-content">
+    <div *ngIf="error" class="error-message">
+      {{ error }}
+    </div>
+
+    <div class="tabs">
+      <button
+        class="tab-btn"
+        [class.active]="activeTab === 'consultations'"
+        (click)="switchTab('consultations')"
+      >
+        📋 Consultations
+      </button>
+      <button
+        class="tab-btn"
+        [class.active]="activeTab === 'referrals'"
+        (click)="switchTab('referrals')"
+      >
+        🔗 Referrals
+      </button>
+    </div>
+
+    <div *ngIf="loading" class="loading">
+      <p>Loading...</p>
+    </div>
+
+    <div *ngIf="!loading && activeTab === 'consultations'" class="tab-content">
+      <h2>Patient Consultations</h2>
+      <div *ngIf="consultations.length === 0" class="empty-state">
+        <p>No consultations yet</p>
+      </div>
+
+      <div *ngFor="let consultation of consultations" class="consultation-card">
+        <div class="card-header">
+          <h3>{{ consultation.patient_name }}</h3>
+          <span class="status" [ngClass]="'status-' + consultation.status">
+            {{ consultation.status | uppercase }}
+          </span>
+        </div>
+
+        <div class="card-body">
+          <p><strong>Patient ID:</strong> {{ consultation.patient_id }}</p>
+          <p><strong>Symptoms:</strong> {{ consultation.symptoms }}</p>
+          <p><strong>Date:</strong> {{ consultation.created_at | date: 'medium' }}</p>
+
+          <div class="actions">
+            <button
+              class="action-btn"
+              (click)="updateConsultationStatus(consultation.id, 'in_progress')"
+              *ngIf="consultation.status === 'pending'"
+            >
+              Start Consultation
+            </button>
+            <button
+              class="action-btn complete"
+              (click)="updateConsultationStatus(consultation.id, 'completed')"
+              *ngIf="consultation.status === 'in_progress'"
+            >
+              Mark as Completed
+            </button>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div *ngIf="!loading && activeTab === 'referrals'" class="tab-content">
+      <h2>Referrals</h2>
+      <div *ngIf="referrals.length === 0" class="empty-state">
+        <p>No referrals yet</p>
+      </div>
+
+      <div *ngFor="let referral of referrals" class="referral-card">
+        <div class="card-header">
+          <h3>{{ referral.specialist_type }}</h3>
+          <span class="status" [ngClass]="'status-' + referral.status">
+            {{ referral.status | uppercase }}
+          </span>
+        </div>
+
+        <div class="card-body">
+          <p><strong>Patient:</strong> {{ referral.patient_name }}</p>
+          <p><strong>Reason:</strong> {{ referral.reason }}</p>
+          <p><strong>Date:</strong> {{ referral.created_at | date: 'medium' }}</p>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+

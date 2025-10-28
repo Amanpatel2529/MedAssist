@@ -1,0 +1,80 @@
+<div class="login-container">
+  <div class="login-card">
+    <div class="login-header">
+      <h1>Medical Chat Bot</h1>
+      <p>Login to your account</p>
+    </div>
+
+    <form (ngSubmit)="login()" class="login-form">
+      <div class="form-group">
+        <label for="email">Email Address</label>
+        <input
+          type="email"
+          id="email"
+          [(ngModel)]="email"
+          name="email"
+          placeholder="Enter your email"
+          required
+        />
+      </div>
+
+      <div class="form-group">
+        <label for="password">Password</label>
+        <div class="password-input-group">
+          <input
+            [type]="showPassword ? 'text' : 'password'"
+            id="password"
+            [(ngModel)]="password"
+            name="password"
+            placeholder="Enter your password"
+            required
+          />
+          <button
+            type="button"
+            class="toggle-password"
+            (click)="togglePasswordVisibility()"
+          >
+            {{ showPassword ? '👁️' : '👁️‍🗨️' }}
+          </button>
+        </div>
+      </div>
+
+      <div *ngIf="error" class="error-message">
+        {{ error }}
+      </div>
+
+      <button
+        type="submit"
+        class="login-button"
+        [disabled]="loading"
+      >
+        {{ loading ? 'Logging in...' : 'Login' }}
+      </button>
+    </form>
+
+    <div class="login-footer">
+      <p>Don't have an account? <a routerLink="/register" style="cursor: pointer;">Register here</a></p>
+    </div>
+  </div>
+
+  <!-- AI Disclaimer -->
+  <div class="disclaimer-section">
+    <div class="disclaimer-card">
+      <h3>⚕️ Important Medical Disclaimer</h3>
+      <p>
+        This AI-powered medical chat bot is designed to provide general health information and educational content only.
+        It is <strong>NOT a substitute for professional medical advice, diagnosis, or treatment</strong>.
+      </p>
+      <ul>
+        <li>Always consult with a qualified healthcare provider for medical concerns</li>
+        <li>AI responses may contain errors or outdated information</li>
+        <li>In case of emergency, call emergency services immediately</li>
+        <li>Do not rely solely on this tool for critical health decisions</li>
+      </ul>
+      <p class="disclaimer-footer">
+        By using this application, you acknowledge that you have read and understood this disclaimer.
+      </p>
+    </div>
+  </div>
+</div>
+
